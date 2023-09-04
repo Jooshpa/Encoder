@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebrew Encoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        button, input {
+            padding: 10px;
+            font-size: 18px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<input id="inputText" type="text" placeholder="Enter Hebrew text">
+<button onclick="translateText()">Translate</button>
+<p id="outputText"></p>
+
+<script>
+    const mappings = {
+        'א': '8',
+        'ב': ')',
+        'ג': '.',
+        'ד': '&',
+        'ה': '*',
+        'ו': '^',
+        'ז': '%',
+        'ח': '$',
+        'ט': '#',
+        'י': ',',
+        'כ': '!',
+        'ל': '@',
+        'מ': '?',
+        'נ': '(',
+        'ס': ']',
+        'ע': '[',
+        'פ': '}',
+        'צ': '{',
+        'ק': '<',
+        'ר': '>',
+        'ש': '=',
+        'ת': '+'
+        // Add more if needed
+    };
+
+    function translateText() {
+        const input = document.getElementById('inputText').value;
+        let output = '';
+
+        for (let char of input) {
+            output += mappings[char] || char;
+        }
+
+        document.getElementById('outputText').innerText = output;
+    }
+</script>
+
+</body>
+</html>
