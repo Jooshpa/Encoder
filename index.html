@@ -14,21 +14,27 @@
             height: 100vh;
             margin: 0;
         }
-        button, input {
+        button, textarea {
             padding: 10px;
             font-size: 18px;
             margin: 5px;
+        }
+        .translation-controls {
+            display: flex;
         }
     </style>
 </head>
 <body>
 
-<input id="inputText" type="text" placeholder="Enter Hebrew text">
-<button onclick="translateText()">Translate</button>
-<p id="outputText"></p>
+<textarea id="inputText" rows="5" cols="30" placeholder="Enter text"></textarea>
+<div class="translation-controls">
+    <button onclick="translateToEncode()">Hebrew ➔ Encode</button>
+    <button onclick="translateToHebrew()">Encode ➔ Hebrew</button>
+</div>
+<textarea id="outputText" rows="5" cols="30" readonly></textarea>
 
 <script>
-    const mappings = {
+    const mappingsToEncode = {
         'א': '8',
         'ב': ')',
         'ג': '.',
@@ -51,18 +57,30 @@
         'ר': '>',
         'ש': '=',
         'ת': '+'
-        // Add more if needed
     };
 
-    function translateText() {
+    const mappingsToHebrew = Object.fromEntries(Object.entries(mappingsToEncode).map(([key, value]) => [value, key]));
+
+    function translateToEncode() {
         const input = document.getElementById('inputText').value;
         let output = '';
 
         for (let char of input) {
-            output += mappings[char] || char;
+            output += mappingsToEncode[char] || char;
         }
 
-        document.getElementById('outputText').innerText = output;
+        document.getElementById('outputText').value = output;
+    }
+
+    function translateToHebrew() {
+        const input = document.getElementById('inputText').value;
+        let output = '';
+
+        for (let char of input) {
+            output += mappingsToHebrew[char] || char;
+        }
+
+        document.getElementById('outputText').value = output;
     }
 </script>
 
