@@ -96,6 +96,7 @@
         </div>
         <div class="button-container">
             <button id="copyBtn" onclick="copyToClipboard()">העתק ללוח</button>
+            <button id="pasteBtn" onclick="pasteFromClipboard()">הדבק</button>
             <button id="clearBtn" onclick="clearText()">נקה</button>
             <button id="translateBtn" onclick="translateText()">תרגם</button>
         </div>
@@ -175,6 +176,12 @@
             const outputText = document.getElementById('outputText');
             outputText.select();
             document.execCommand('copy');
+        }
+
+        function pasteFromClipboard() {
+            navigator.clipboard.readText()
+                .then(clipText => document.getElementById('inputText').value = clipText)
+                .catch(err => console.error('Failed to read clipboard: ', err));
         }
 
         function clearText() {
