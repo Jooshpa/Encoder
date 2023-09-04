@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebrew Encoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .translation-container {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .box-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .lang-select,
+        textarea {
+            font-size: 18px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #a5d6a7;
+            padding: 10px;
+            direction: rtl;
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .swap-icon {
+            margin: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #66bb6a;
+            transition: color 0.2s;
+        }
+
+        .swap-icon:hover {
+            color: #43a047;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #66bb6a;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body onkeydown="return (event.keyCode !== 123)">
+
+    <div class="translation-container">
+        <div class="box-container">
+            <div class="lang-select">מוצפן</div>
+            <div class="swap-icon" onclick="swapLanguages()">↔</div>
+            <div class="lang-select">עברית</div>
+        </div>
+        <div class="box-container">
+            <textarea id="outputText" readonly></textarea>
+            <textarea id="inputText" placeholder="הזן טקסט"></textarea>
+        </div>
+        <div class="button-container">
+            <button id="copyBtn" onclick="copyToClipboard()">העתק ללוח</button>
+            <button id="clearBtn" onclick="clearText()">נקה</button>
+            <button id="translateBtn" onclick="translateText()">תרגם</button>
+        </div>
+    </div>
+
+    <script>
+        const mappingsToEncode = {
+        'א': '8',
+        'ב': ')',
+        'ג': '.',
+        'ד': '&',
+        'ה': '*',
+        'ו': '^',
+        'ז': '%',
+        'ח': '$',
+        'ט': '#',
+        'י': ',',
+        'כ': '!',
+        'ל': '@',
+        'מ': '?',
+        'נ': '(',
+        'ס': ']',
+        'ע': '[',
+        'פ': '}',
+        'צ': '{',
+        'ק': '<',
+        'ר': '>',
+        'ש': '=',
+        'ת': '+'
+        };
+
+        const mappingsToHebrew = Object.fromEntries(Object.entries(mappingsToEncode).map(([key, value]) => [value, key]));
+
+        function translateText() {
+            const inputVal = document.getElementById('inputText').value;
+
+            if (document.querySelector('.lang-select:last-child').textContent === 'עברית') {
+                document.getElementById('outputText').value = translateToEncode(inputVal);
+            } else {
+                document.getElementById('outputText').value = translateToHebrew(inputVal);
+            }
+        }
+
+        function translateToEncode(text) {
+            let output = '';
+            for (let char of text) {
+                output += mappingsToEncode[char] || char;
+            }
+            return output;
+        }
+
+        function translateToHebrew(text) {
+            let output = '';
+            for (let char of text) {
+                output += mappingsToHebrew[char] || char;
+            }
+            return output;
+        }
+
+        function swapLanguages() {
+            const firstLang = document.querySelector('.lang-select:first-child');
+            const secondLang = document.querySelector('.lang-select:last-child');
+            const inputVal = document.getElementById('inputText').value;
+
+            if (firstLang.textContent === 'עברית') {
+                firstLang.textContent = 'מוצפן';
+                secondLang.textContent = 'עברית';
+                document.getElementById('inputText').value = translateToEncode(inputVal);
+            } else {
+                firstLang.textContent = 'עברית';
+                secondLang.textContent = 'מוצפן';
+                document.getElementById('inputText').value = translateToHebrew(inputVal);
+            }
+        }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            outputText.select();
+            document.execCommand('copy');
+        }
+
+        function clearText() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        }
+    </script>
+
+</body>
+
+</html>
