@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERROR</title>
+    <title>Hebrew Encoder</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,13 +26,29 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .box-container {
+        .lang-select-container {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .lang-select,
+        .lang-select {
+            font-size: 18px;
+            margin: 10px;
+            flex: 1;
+        }
+
+        .swap-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #66bb6a;
+            transition: color 0.2s;
+            margin: 0 15px;
+        }
+
+        .swap-icon:hover {
+            color: #43a047;
+        }
+
         textarea {
             font-size: 18px;
             margin: 10px 0;
@@ -41,23 +57,8 @@
             border: 1px solid #a5d6a7;
             padding: 10px;
             direction: rtl;
-        }
-
-        textarea {
             height: 150px;
             resize: vertical;
-        }
-
-        .swap-icon {
-            margin: 10px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #66bb6a;
-            transition: color 0.2s;
-        }
-
-        .swap-icon:hover {
-            color: #43a047;
         }
 
         button {
@@ -85,15 +86,15 @@
 <body onkeydown="return (event.keyCode !== 123)">
 
     <div class="translation-container">
-        <div class="box-container">
-            <div class="lang-select">מוצפן</div>
-            <div class="swap-icon" onclick="swapLanguages()">↔</div>
-            <div class="lang-select">עברית</div>
+        <div class="lang-select-container">
+            <div class="lang-select" style="text-align: right;">עברית</div>
+            <div class="swap-icon" onclick="swapLanguages()">→</div>
+            <div class="lang-select" style="text-align: left;">מוצפן</div>
         </div>
-        <div class="box-container">
-            <textarea id="outputText" readonly></textarea>
-            <textarea id="inputText" placeholder="הזן טקסט"></textarea>
-        </div>
+
+        <textarea id="inputText" placeholder="הזן טקסט"></textarea>
+        <textarea id="outputText" readonly></textarea>
+
         <div class="button-container">
             <button id="copyBtn" onclick="copyToClipboard()">העתק ללוח</button>
             <button id="pasteBtn" onclick="pasteFromClipboard()">הדבק</button>
@@ -103,7 +104,8 @@
     </div>
 
     <script>
-        const mappingsToEncode = {
+
+       const mappingsToEncode = {
         'א': '8',
         'ב': ')',
         'ג': '-',
@@ -133,7 +135,7 @@
         function translateText() {
             const inputVal = document.getElementById('inputText').value;
 
-            if (document.querySelector('.lang-select:last-child').textContent === 'עברית') {
+            if (document.querySelector('.swap-icon').textContent === '→') {
                 document.getElementById('outputText').value = translateToEncode(inputVal);
             } else {
                 document.getElementById('outputText').value = translateToHebrew(inputVal);
@@ -157,18 +159,12 @@
         }
 
         function swapLanguages() {
-            const firstLang = document.querySelector('.lang-select:first-child');
-            const secondLang = document.querySelector('.lang-select:last-child');
-            const inputVal = document.getElementById('inputText').value;
+            const arrow = document.querySelector('.swap-icon');
 
-            if (firstLang.textContent === 'עברית') {
-                firstLang.textContent = 'מוצפן';
-                secondLang.textContent = 'עברית';
-                document.getElementById('inputText').value = translateToEncode(inputVal);
+            if (arrow.textContent === '→') {
+                arrow.innerHTML = '←';
             } else {
-                firstLang.textContent = 'עברית';
-                secondLang.textContent = 'מוצפן';
-                document.getElementById('inputText').value = translateToHebrew(inputVal);
+                arrow.innerHTML = '→';
             }
         }
 
@@ -179,9 +175,8 @@
         }
 
         function pasteFromClipboard() {
-            navigator.clipboard.readText()
-                .then(clipText => document.getElementById('inputText').value = clipText)
-                .catch(err => console.error('Failed to read clipboard: ', err));
+            // Note: Browsers may prevent this action for security reasons.
+            navigator.clipboard.readText().then(clipText => document.getElementById('inputText').value = clipText);
         }
 
         function clearText() {
