@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hebrew Encoder</title>
+    <title>ERROR</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,12 +29,12 @@
         .lang-select-container {
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
 
         .lang-select {
             font-size: 18px;
             margin: 10px;
-            flex: 1;
         }
 
         .swap-icon {
@@ -85,7 +85,9 @@
 
 <body onkeydown="return (event.keyCode !== 123)">
 
-    <div class="translation-container">
+  <div class="translation-container">
+    <div class="header" style="text-align: center; font-size: 24px; margin-bottom: 20px;">Hello</div>
+
         <div class="lang-select-container">
             <div class="lang-select" style="text-align: right;">עברית</div>
             <div class="swap-icon" onclick="swapLanguages()">→</div>
@@ -104,30 +106,13 @@
     </div>
 
     <script>
-
-       const mappingsToEncode = {
-        'א': '8',
-        'ב': ')',
-        'ג': '-',
-        'ד': '&',
-        'ה': '₪',
-        'ו': '^',
-        'ז': '%',
-        'ח': '$',
-        'ט': '#',
-        'י': '|',
-        'כ': '•',
-        'ל': '@',
-        'מ': ';',
-        'נ': '(',
-        'ס': ']',
-        'ע': '[',
-        'פ': '}',
-        'צ': '{',
-        'ק': '<',
-        'ר': '>',
-        'ש': '=',
-        'ת': '+'
+        const mappingsToEncode = {
+            'א': '12a', 'ב': '23b', 'ג': '34c', 'ד': '45d', 'ה': '56e',
+            'ו': '67f', 'ז': '78g', 'ח': '89h', 'ט': '90i', 'י': '01j',
+            'כ': 'ab1', 'ל': 'bc2', 'מ': 'cd3', 'נ': 'de4', 'ס': 'ef5',
+            'ע': 'fg6', 'פ': 'gh7', 'צ': 'hi8', 'ק': 'ij9', 'ר': 'jk0',
+            'ש': 'kl!', 'ת': 'lm@', 
+            'ך': 'mn#', 'ם': 'op$', 'ן': 'pq%', 'ף': 'qr^', 'ץ': 'st&'
         };
 
         const mappingsToHebrew = Object.fromEntries(Object.entries(mappingsToEncode).map(([key, value]) => [value, key]));
@@ -136,7 +121,9 @@
             const inputVal = document.getElementById('inputText').value;
 
             if (document.querySelector('.swap-icon').textContent === '→') {
-                document.getElementById('outputText').value = translateToEncode(inputVal);
+                document.getElementById('outputText').
+
+value = translateToEncode(inputVal);
             } else {
                 document.getElementById('outputText').value = translateToHebrew(inputVal);
             }
@@ -150,10 +137,21 @@
             return output;
         }
 
-        function translateToHebrew(text) {
+        function translateToHebrew(encodedText) {
             let output = '';
-            for (let char of text) {
-                output += mappingsToHebrew[char] || char;
+            for (let i = 0; i < encodedText.length; i++) {
+                let threeCharSeq = encodedText.substring(i, i + 3);
+                let twoCharSeq = encodedText.substring(i, i + 2);
+                let oneChar = encodedText[i];
+                if (mappingsToHebrew[threeCharSeq]) {
+                    output += mappingsToHebrew[threeCharSeq];
+                    i += 2; // skip the next 2 characters
+                } else if (mappingsToHebrew[twoCharSeq]) {
+                    output += mappingsToHebrew[twoCharSeq];
+                    i += 1; // skip the next character
+                } else {
+                    output += mappingsToHebrew[oneChar] || oneChar;
+                }
             }
             return output;
         }
